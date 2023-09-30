@@ -11,18 +11,18 @@
 //	")(()))"          =>  false
 //	"("               =>  false
 //	"(())((()())())"  =>  true
-package validparentheses
+package parenvalidator
 
 func Validate(str string) bool {
-	balance := 0
+	var balance int
 
 	for _, s := range str {
 		if s == '(' {
 			balance++
-		} else {
-			balance--
+			continue
 		}
 
+		balance--
 		if balance < 0 {
 			break
 		}
@@ -32,7 +32,7 @@ func Validate(str string) bool {
 }
 
 func ValidateRecursively(str string) bool {
-	balance := 0
+	var balance int
 
 	validateRecursively(str, &balance)
 
