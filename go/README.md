@@ -6,6 +6,14 @@
 
 ## Run Tests
 
-```shell
-go test ./<package-name> -v
-```
+- All test files
+
+    ```shell
+    make test
+    ```
+
+- Test files in directory
+
+    ```shell
+    make test-dir dir=./<dir-name>
+    ```
