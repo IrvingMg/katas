@@ -1,6 +1,7 @@
-package validparentheses
+package parenvalidator_test
 
 import (
+	"katas-go/parenvalidator"
 	"testing"
 )
 
@@ -33,7 +34,7 @@ func TestValidate(t *testing.T) {
 
 	for name, data := range cases {
 		t.Run(name, func(st *testing.T) {
-			got := Validate(data.input)
+			got := parenvalidator.Validate(data.input)
 			if got != data.want {
 				st.Errorf("want: %v, but got: %v", data.want, got)
 			}
@@ -70,7 +71,7 @@ func TestValidateRecursively(t *testing.T) {
 
 	for name, data := range cases {
 		t.Run(name, func(st *testing.T) {
-			got := ValidateRecursively(data.input)
+			got := parenvalidator.ValidateRecursively(data.input)
 			if got != data.want {
 				st.Errorf("want: %v, but got: %v", data.want, got)
 			}
