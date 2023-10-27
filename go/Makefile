@@ -1,5 +1,5 @@
 test:
-	go test ./... -count=1 -v
+	go test ./... -race -count=1 -v
 
 test-dir:
-	go test $(dir) -count=1 -v
+	go test $(dir) -race -count=1 -v
