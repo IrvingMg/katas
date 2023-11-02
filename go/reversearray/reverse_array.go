@@ -40,3 +40,15 @@ func ReverseMultiStringConcurrently(data []string) []string {
 
 	return data
 }
+
+func ReverseMultiStringConcurrentlyWithLimit(data []string, poolSize int) []string {
+	out := make(chan string, poolSize)
+	for i := range data {
+		go func(i int) {
+			out <- reverseString(data[i])
+		}(i)
+		data[i] = <-out
+	}
+
+	return data
+}
