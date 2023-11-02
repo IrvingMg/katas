@@ -28,3 +28,15 @@ func reverseString(str string) string {
 
 	return string(runes)
 }
+
+func ReverseMultiStringConcurrently(data []string) []string {
+	out := make(chan string)
+	for i := range data {
+		go func(i int) {
+			out <- reverseString(data[i])
+		}(i)
+		data[i] = <-out
+	}
+
+	return data
+}
