@@ -1,9 +1,11 @@
 package reversearray_test
 
 import (
+	"context"
 	"katas-go/reversearray"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestReverseMultiString(t *testing.T) {
@@ -64,5 +66,31 @@ func TestReverseMultiStringWithGenerator(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestReverseMultiStringWithCancellation(t *testing.T) {
+	// given
+	input := []string{"alpha", "beta", "charlie", "delta", "foxtrot"}
+	want := []string{"ahpla", "ateb", "eilrahc", "atled", "tortxof"}
+
+	// when
+	duration := 1 * time.Second
+	ctx, cancel := context.WithTimeout(context.TODO(), duration)
+	defer cancel()
+	got := reversearray.ReverseMultiStringWithCancellation(ctx, input)
+
+	// then
+	var gotCount int
+	for gotVal := range got {
+		gotCount++
+		want := want[gotVal.Index]
+		if want != gotVal.Str {
+			t.Errorf("want: %v, but got: %v", want, gotVal.Str)
+		}
+	}
+
+	if len(want) != gotCount {
+		t.Errorf("want: %v elements, but got: %v", len(want), gotCount)
 	}
 }
