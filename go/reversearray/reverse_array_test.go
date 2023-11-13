@@ -35,7 +35,7 @@ func TestReverseMultiString(t *testing.T) {
 	}
 }
 
-func TestReverseMultiStringConcurrently(t *testing.T) {
+func TestReverseMultiStringWithGenerator(t *testing.T) {
 	cases := map[string]struct {
 		input []string
 		want  []string
@@ -56,9 +56,12 @@ func TestReverseMultiStringConcurrently(t *testing.T) {
 
 	for name, data := range cases {
 		t.Run(name, func(st *testing.T) {
-			got := reversearray.ReverseMultiStringConcurrently(data.input)
-			if !reflect.DeepEqual(got, data.want) {
-				st.Errorf("want: %+v, but got: %+v", data.want, got)
+			got := reversearray.ReverseMultiStringWithGenerator(data.input)
+			for gotVal := range got {
+				want := data.want[gotVal.Index]
+				if want != gotVal.Str {
+					t.Errorf("want: %v, but got: %v", want, gotVal.Str)
+				}
 			}
 		})
 	}
