@@ -11,6 +11,8 @@
 package reversearray
 
 import (
+	"context"
+	"log"
 	"slices"
 )
 
@@ -44,6 +46,32 @@ func ReverseMultiStringWithGenerator(data []string) chan ReversedString {
 				Str:   reverseString(data[i]),
 				Index: i,
 			}
+		}
+	}()
+
+	return stream
+}
+
+func ReverseMultiStringWithCancellation(ctx context.Context, data []string) chan ReversedString {
+	stream := make(chan ReversedString)
+
+	//time.Sleep(1 * time.Second)
+	go func() {
+		defer close(stream)
+		for i := range data {
+			val := ReversedString{
+				Str:   reverseString(data[i]),
+				Index: i,
+			}
+			select {
+			case stream <- val:
+				log.Printf("val: %+v sent", val)
+				continue
+			case <-ctx.Done():
+				log.Println("work cancelled")
+				return
+			}
+
 		}
 	}()
 
