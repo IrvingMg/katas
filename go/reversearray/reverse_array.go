@@ -14,6 +14,11 @@ import (
 	"slices"
 )
 
+type ReversedString struct {
+	Str   string
+	Index int
+}
+
 func ReverseMultiString(data []string) []string {
 	for i := range data {
 		data[i] = reverseString(data[i])
@@ -29,16 +34,20 @@ func reverseString(str string) string {
 	return string(runes)
 }
 
-func ReverseMultiStringConcurrently(data []string) []string {
-	out := make(chan string)
-	for i := range data {
-		go func(i int) {
-			out <- reverseString(data[i])
-		}(i)
-		data[i] = <-out
-	}
+func ReverseMultiStringWithGenerator(data []string) chan ReversedString {
+	stream := make(chan ReversedString)
 
-	return data
+	go func() {
+		defer close(stream)
+		for i := range data {
+			stream <- ReversedString{
+				Str:   reverseString(data[i]),
+				Index: i,
+			}
+		}
+	}()
+
+	return stream
 }
 
 func ReverseMultiStringConcurrentlyWithLimit(data []string, poolSize int) []string {
