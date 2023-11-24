@@ -94,3 +94,27 @@ func TestReverseMultiStringWithCancellation(t *testing.T) {
 		t.Errorf("want: %v elements, but got: %v", len(want), gotCount)
 	}
 }
+
+func TestReverseMultiStringWithWorkLimit(t *testing.T) {
+	// given
+	input := []string{"alpha", "beta", "charlie", "delta", "foxtrot"}
+	want := []string{"ahpla", "ateb", "eilrahc", "atled", "tortxof"}
+
+	// when
+	got := reversearray.ReverseMultiStringWithWorkLimit(input)
+
+	// then
+	var gotCount int
+	for i := 0; i < cap(input); i++ {
+		gotVal := <-got
+		gotCount++
+		want := want[gotVal.Index]
+		if want != gotVal.Str {
+			t.Errorf("want: %v, but got: %v", want, gotVal.Str)
+		}
+	}
+
+	if len(want) != gotCount {
+		t.Errorf("want: %v elements, but got: %v", len(want), gotCount)
+	}
+}

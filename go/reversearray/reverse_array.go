@@ -13,6 +13,7 @@ package reversearray
 import (
 	"context"
 	"log"
+	"runtime"
 	"slices"
 )
 
@@ -78,14 +79,26 @@ func ReverseMultiStringWithCancellation(ctx context.Context, data []string) chan
 	return stream
 }
 
-func ReverseMultiStringConcurrentlyWithLimit(data []string, poolSize int) []string {
-	out := make(chan string, poolSize)
-	for i := range data {
+func ReverseMultiStringWithWorkLimit(data []string) chan ReversedString {
+	workers := len(data)
+	stream := make(chan ReversedString, workers)
+
+	g := runtime.GOMAXPROCS(0)
+	sem := make(chan bool, g)
+	for i := 0; i < workers; i++ {
 		go func(i int) {
-			out <- reverseString(data[i])
+			sem <- true
+			{
+				val := ReversedString{
+					Str:   reverseString(data[i]),
+					Index: i,
+				}
+				log.Printf("val: %+v sent", val)
+				stream <- val
+			}
+			<-sem
 		}(i)
-		data[i] = <-out
 	}
 
-	return data
+	return stream
 }
