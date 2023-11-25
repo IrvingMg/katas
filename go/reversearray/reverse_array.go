@@ -67,7 +67,6 @@ func ReverseMultiStringWithCancellation(ctx context.Context, data []string) chan
 			select {
 			case stream <- val:
 				log.Printf("val: %+v sent", val)
-				continue
 			case <-ctx.Done():
 				log.Println("work cancelled")
 				return
@@ -79,25 +78,34 @@ func ReverseMultiStringWithCancellation(ctx context.Context, data []string) chan
 	return stream
 }
 
-func ReverseMultiStringWithWorkLimit(data []string) chan ReversedString {
+func ReverseMultiStringWithWorkLimit(ctx context.Context, data []string) chan chan ReversedString {
 	workers := len(data)
-	stream := make(chan ReversedString, workers)
+	stream := make(chan chan ReversedString, workers)
+	defer close(stream)
 
+	//time.Sleep(1 * time.Second)
 	g := runtime.GOMAXPROCS(0)
 	sem := make(chan bool, g)
 	for i := 0; i < workers; i++ {
-		go func(i int) {
-			sem <- true
-			{
+		sem <- true
+		{
+			ch := make(chan ReversedString)
+			go func(i int) {
+				defer close(ch)
 				val := ReversedString{
 					Str:   reverseString(data[i]),
 					Index: i,
 				}
-				log.Printf("val: %+v sent", val)
-				stream <- val
-			}
-			<-sem
-		}(i)
+				select {
+				case ch <- val:
+					log.Printf("val: %+v sent", val)
+				case <-ctx.Done():
+					log.Println("work cancelled")
+				}
+			}(i)
+			stream <- ch
+		}
+		<-sem
 	}
 
 	return stream

@@ -101,12 +101,15 @@ func TestReverseMultiStringWithWorkLimit(t *testing.T) {
 	want := []string{"ahpla", "ateb", "eilrahc", "atled", "tortxof"}
 
 	// when
-	got := reversearray.ReverseMultiStringWithWorkLimit(input)
+	duration := 1 * time.Second
+	ctx, cancel := context.WithTimeout(context.TODO(), duration)
+	defer cancel()
+	got := reversearray.ReverseMultiStringWithWorkLimit(ctx, input)
 
 	// then
 	var gotCount int
-	for i := 0; i < cap(input); i++ {
-		gotVal := <-got
+	for gotCh := range got {
+		gotVal := <-gotCh
 		gotCount++
 		want := want[gotVal.Index]
 		if want != gotVal.Str {
