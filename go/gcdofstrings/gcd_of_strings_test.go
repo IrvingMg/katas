@@ -33,7 +33,7 @@ func TestGcdOfString(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			got := GcdOfStrings(tc.str1, tc.str2)
 			if got != tc.want {
-				t.Errorf("expected: %v, want: %v", tc.want, got)
+				t.Errorf("expected: %v, got: %v", tc.want, got)
 			}
 		})
 	}
