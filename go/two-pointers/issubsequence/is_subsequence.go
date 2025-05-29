@@ -10,12 +10,12 @@ package issubsequence
 
 func IsSubsequence(s string, t string) bool {
 	var i, j int
-	for i < len(t) && j < len(s) {
-		if t[i] == s[j] {
-			j++
+	for i < len(s) && j < len(t) {
+		if s[i] == t[j] {
+			i++
 		}
-		i++
+		j++
 	}
 
-	return j == len(s)
+	return i == len(s)
 }
