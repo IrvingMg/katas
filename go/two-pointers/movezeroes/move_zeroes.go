@@ -6,16 +6,12 @@
 package movezeroes
 
 func MoveZeroes(nums []int) {
-	var zeroIdx int
-	for i := 1; i < len(nums); i++ {
-		if nums[zeroIdx] != 0 {
-			zeroIdx++
+	for i, j := 0, 0; i < len(nums); i++ {
+		if nums[i] == 0 {
 			continue
 		}
 
-		if nums[i] != 0 {
-			nums[zeroIdx], nums[i] = nums[i], 0
-			zeroIdx++
-		}
+		nums[i], nums[j] = nums[j], nums[i]
+		j++
 	}
 }

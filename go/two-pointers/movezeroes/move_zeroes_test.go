@@ -21,6 +21,21 @@ func TestMoveZeroes(t *testing.T) {
 			nums: []int{0},
 			want: []int{0},
 		},
+		{
+			name: "Case 3",
+			nums: []int{1, 0, 1},
+			want: []int{1, 1, 0},
+		},
+		{
+			name: "Case 4",
+			nums: []int{1, 2},
+			want: []int{1, 2},
+		},
+		{
+			name: "Case 5",
+			nums: []int{4, 2, 4, 0, 0, 3, 0, 5, 1, 0},
+			want: []int{4, 2, 4, 3, 5, 1, 0, 0, 0, 0},
+		},
 	}
 
 	for _, tc := range cases {
