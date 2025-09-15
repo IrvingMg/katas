@@ -1,5 +1,6 @@
 # Katas
 
-This repository functions as an archive documenting my personal solutions to diverse coding katas.
-It's a straightforward record of my approach and resolutions to these challenges.
-Feel free to explore and gain insights into different problem-solving strategies.
+This repository is my personal playground for practicing programming through **exercises** and **challenges**.
+
+- **exercises/** → small problems and DSA-style practice
+- **challenges/** → small apps, demos, or projects built while following tutorials
